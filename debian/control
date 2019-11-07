@@ -1,0 +1,49 @@
+Source: vyatta-service-telnet
+Section: contrib/net
+Priority: extra
+Maintainer: Vyatta Package Maintainers <DL-vyatta-help@att.com>
+Build-Depends: cpio, debhelper (>= 9), dh-systemd (>= 1.5), dh-yang
+Standards-Version: 3.9.6
+
+Package: vyatta-service-telnet
+Architecture: any
+Depends: systemd,
+ vyatta-cfg,
+ telnetd,
+ ${misc:Depends},
+ ${perl:Depends},
+ ${shlibs:Depends}
+Breaks: vyatta-cfg-system (<< 1.6.0), vyatta-op (<< 1.0)
+Replaces: vyatta-cfg-system (<< 1.6.0), vyatta-op (<< 1.0)
+Provides: openbsd-inetd
+Description: Telnet helper scripts
+ Scripts to handle configuration of telnet
+
+Package: vyatta-service-telnet-v1-yang
+Architecture: all
+Depends: vyatta-service-telnet,
+ ${misc:Depends},
+ ${yang:Depends}
+Breaks: vyatta-cfg-system (<< 1.6.0)
+Replaces: vyatta-cfg-system (<< 1.6.0)
+Description: vyatta-service-telnet-v1 module
+ Telnet configuration
+
+Package: vyatta-service-telnet-routing-instance-v1-yang
+Architecture: all
+Depends: chvrf,
+ vyatta-service-telnet,
+ ${misc:Depends},
+ ${yang:Depends}
+Description: vyatta-service-telnet-routing-instance-v1 module
+ Telnet configuration in VRF
+
+Package: vyatta-telnet-routing-instance
+Architecture: all
+Depends: chvrf,
+ vyatta-service-telnet,
+ ${misc:Depends},
+ ${yang:Depends}
+Description: Telnet op mode command with VRF support
+ Telnet operational mode command with VRF support having
+ 'routing-instance' option

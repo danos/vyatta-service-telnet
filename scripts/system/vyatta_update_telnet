@@ -1,0 +1,133 @@
+#! /bin/bash
+# Script to control telnet daemon parameters
+
+usage() {
+    echo "Usage: $0 [vrf=<vrf>] --operation=enable --port=<port> [--address=listen-address]"
+    echo "       $0 [vrf=<vrf>] --operation=disable"
+    echo "       $0 [vrf=<vrf>] --operation=allow-root --allowroot={true|false}"
+    exit 1;
+}
+
+allow_root_op() {
+    case "$1" in
+        true) ;;
+        false) ;;
+        *)  echo "Expect true or false"
+            usage ;;
+    esac
+
+    sed -i -e '/^# Pseudo-terminal (telnet)/,$d' /etc/securetty
+
+    if [[ $1 = "false" ]]; then
+        return
+    fi
+
+    sh -c "cat >>/etc/securetty" <<EOF
+# Pseudo-terminal (telnet)
+pts/0
+pts/1
+pts/2
+pts/3
+pts/4
+pts/5
+pts/6
+pts/7
+pts/8
+pts/9
+pts/10
+pts/11
+pts/12
+pts/13
+pts/14
+pts/15
+pts/16
+pts/17
+pts/18
+pts/19
+EOF
+
+}
+
+for option in "$@"
+do
+    case $option in
+        --address=*)
+            address="${option#*=}"
+            shift
+            ;;
+        --operation=*)
+            operation="${option#*=}"
+            shift
+            ;;
+        --port=*)
+            port="${option#*=}"
+            shift
+            ;;
+        --vrf=*)
+            vrf="${option#*=}"
+            shift
+            ;;
+        --allowroot=*)
+            allowroot="${option#*=}"
+            shift
+            ;;
+        *)
+            echo "telnet: Unknown argument $option";
+            usage
+            ;;
+    esac
+done
+
+vrf=${vrf:-default}
+
+case "$operation" in
+    allow-root)
+        if [[ -z "$allowroot" ]]; then
+            echo "telnet: Missing allow-root value"
+            usage
+        fi
+        allow_root_op "$allowroot"
+        ;;
+
+    enable)
+        if [[ -z "$port" ]]; then
+            echo "telnet: Missing port number"
+            usage
+        fi
+
+        if [[ ! -d /run/systemd/system ]]; then
+            echo "Cannot start telnet service: Requires systemd, but systemd is not init"
+        else
+            DAEMON=telnetd
+            VRFP=""
+            if [[ "$vrf" != "default" ]]; then
+                VRFP="/telnetd/vrf/${vrf}"
+                DAEMON="$DAEMON@${vrf}.service"
+                [[ -d /run/telnetd/vrf/${vrf} ]] || mkdir -p "/run/telnetd/vrf/${vrf}"
+            fi
+
+            if [[ -n "$address" ]]; then
+                echo "TELNETD_PORT=$address:$port" > "/run${VRFP}/telnetd.env"
+            else
+                echo "TELNETD_PORT=$port" > "/run${VRFP}/telnetd.env"
+            fi
+            systemctl restart "$DAEMON"
+        fi
+        ;;
+
+    disable)
+        if [[ ! -d /run/systemd/system ]]; then
+            echo "telnet service is not running"
+        else
+            DAEMON=telnetd
+            [[ "$vrf" == "default" ]] || DAEMON="$DAEMON@${vrf}.service"
+            systemctl stop "$DAEMON"
+            [[ $? == 0 ]] || echo "Cannot stop telnet service"
+        fi
+        ;;
+
+    *)
+        echo "telnet: Unknown operation $operation";
+        usage
+        ;;
+esac

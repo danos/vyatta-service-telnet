@@ -1,0 +1,2 @@
+help: Telnet to host in routing-instance
+allowed: echo -n '<routing-instance>'

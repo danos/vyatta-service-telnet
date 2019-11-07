@@ -1,0 +1,125 @@
+module vyatta-service-telnet-v1 {
+	namespace "urn:vyatta.com:mgmt:vyatta-service-telnet:1";
+	prefix vyatta-service-telnet-v1;
+
+	import vyatta-types-v1 {
+		prefix types;
+	}
+	import vyatta-services-v1 {
+		prefix service;
+	}
+	import configd-v1 {
+		prefix configd;
+	}
+	import vyatta-system-v1 {
+		prefix system;
+	}
+
+	organization "Brocade Communications Systems, Inc.";
+	contact
+		"Brocade Communications Systems, Inc.
+		 Postal: 130 Holger Way
+		         San Jose, CA 95134
+		 E-mail: support@Brocade.com
+		 Web: www.brocade.com";
+
+	description
+		"Copyright (c) 2016 by Brocade Communications Systems, Inc.
+		 All rights reserved.
+
+		 Redistribution and use in source and binary forms, with or
+		 without modification, are permitted provided that the following
+		 conditions are met:
+
+		 1. Redistributions of source code must retain the above copyright
+			notice, this list of conditions and the following disclaimer.
+		 2. Redistributions in binary form must reproduce the above
+			copyright notice, this list of conditions and the following
+			disclaimer in the documentation and/or other materials provided
+			with the distribution.
+		 3. Neither the name of the copyright holder nor the names of its
+			contributors may be used to endorse or promote products derived
+			from this software without specific prior written permission.
+
+		 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+		 'AS IS' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+		 LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+		 FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+		 COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+		 INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+		 BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+		 LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+		 CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+		 LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+		 ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+		 POSSIBILITY OF SUCH DAMAGE.
+
+		 SPDX-License-Identifier: BSD-3-Clause
+
+		 Telnet configuration";
+
+	revision 2016-03-21 {
+		description "Use grouping for telnet service.";
+	}
+	revision 2015-08-14 {
+		description "Initial revision of version 1.";
+	}
+
+	grouping telnet-service-grouping {
+		leaf port {
+			type uint32 {
+				range 1..65535;
+			}
+			default "23";
+			description "Port for telnet service";
+			configd:delete "vyatta_update_telnet --vrf=$VAR(../../../../routing-instance/@) --operation=disable";
+			configd:help "Port for telnet service";
+		}
+		leaf listen-address {
+			type union {
+				type types:ipv4-address;
+				type types:ipv6-address;
+			}
+			description "Local address telnet should listen on";
+			configd:delete "vyatta_update_telnet --vrf=$VAR(../../../../routing-instance/@) --operation=disable";
+			configd:help "Local address telnet should listen on";
+		}
+	}
+
+	augment /service:service {
+		container telnet {
+			presence "enable telnet";
+			description "Telnet service";
+			configd:priority "500";
+			configd:help "Enable/disable Network Virtual Terminal Protocol (TELNET) protocol";
+			configd:delete "vyatta_update_telnet --operation=disable";
+			configd:end "/opt/vyatta/share/tmplscripts/service/telnet/configd_end.sh";
+			leaf allow-root {
+				type empty;
+				status deprecated;
+				description "Enable root login over telnet";
+				configd:create "vyatta_update_telnet --operation=allow-root --allowroot=true";
+				configd:delete "vyatta_update_telnet --operation=allow-root --allowroot=false";
+				configd:help "Enable root login over telnet";
+			}
+			uses telnet-service-grouping;
+		}
+	}
+
+	augment /system:system {
+		container telnet {
+			description "System-wide options for telnet service";
+			configd:help "System-wide options for telnet service";
+			leaf allow-root {
+				must "not(/service:service/telnet/allow-root)" {
+					error-message "Cannot configure 'allow-root' option in both system and service";
+				}
+				type empty;
+				description "Enable root login over telnet";
+				configd:create "vyatta_update_telnet --operation=allow-root --allowroot=true";
+				configd:delete "vyatta_update_telnet --operation=allow-root --allowroot=false";
+				configd:help "Enable root login over telnet";
+			}
+		}
+	}
+}

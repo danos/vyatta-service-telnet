@@ -1,0 +1,3 @@
+help: Telnet to host
+allowed: echo -n '<hostname> <x.x.x.x> <h:h:h:h:h:h:h:h>'
+run: vrouter-telnet ${@:2}

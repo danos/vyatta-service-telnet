@@ -1,0 +1,10 @@
+[Unit]
+Description=TELNET protocol daemon
+
+[Service]
+Environment=TERM=linux
+EnvironmentFile=/run/telnetd.env
+ExecStart=/opt/vyatta/sbin/mini-inetd $TELNETD_PORT /usr/sbin/in.telnetd telnetd
+
+[Install]
+WantedBy=multi-user.target

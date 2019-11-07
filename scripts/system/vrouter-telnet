@@ -1,0 +1,63 @@
+#! /usr/bin/perl
+# **** License ****
+# Copyright (c) 2016 by Brocade Communications Systems, Inc.
+# All rights reserved.
+#
+# SPDX-License-Identifier: GPL-2.0-only
+# **** End License ****
+#
+# Syntax
+#   telnet HOST
+#           [ port ]
+#           [ routing-instance ]
+
+use strict;
+use warnings;
+use feature ":5.10";
+use NetAddr::IP;
+
+my %options = (
+    'port'             => 'p',
+    'routing-instance' => 'v',
+);
+
+# First argument is host
+my $host = shift @ARGV;
+die "telnet: Missing host\n"
+  unless defined($host);
+
+my @telnetargs  = ();
+my $userargs    = [@ARGV];
+my $partial_cmd = '';
+my $path_chvrf  = '/usr/sbin/chvrf';
+
+while ( my $userarg = shift @$userargs ) {
+    my $targ = $options{$userarg};
+    die "telnet: unknown option $userarg\n"
+      unless $targ;
+
+    if ( $targ eq 'p' ) {
+        push @telnetargs, shift @$userargs;
+    }
+    elsif ( $targ eq 'v' ) {
+        my $vrf = shift @$userargs;
+        $partial_cmd = "$path_chvrf $vrf";
+    }
+}
+
+my $path_usr_bin_telnet = '/usr/bin/telnet';
+my $path_bin_busybox    = '/bin/busybox';
+
+if ( -e $path_usr_bin_telnet ) {
+    $partial_cmd .= " $path_usr_bin_telnet";
+}
+elsif ( -e $path_bin_busybox ) {
+    $partial_cmd .= " $path_bin_busybox";
+}
+else {
+    die "telnet not found";
+}
+
+my $cmd_args = join( " ", @telnetargs );
+my $cmd = "$partial_cmd $host $cmd_args";
+exec $cmd;

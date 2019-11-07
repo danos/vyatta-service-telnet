@@ -1,0 +1,4 @@
+help: Telnet to address in <routing-instance>
+allowed: echo -n '<routing-instance>'
+include: /telnet/node.tag
+run: vrouter-telnet ${@:2}

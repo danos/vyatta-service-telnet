@@ -1,0 +1,4 @@
+help: Telnet to <address> <port>
+allowed: echo -n '<1-65535>'
+include: /telnet/node.tag
+run: vrouter-telnet ${@:2}

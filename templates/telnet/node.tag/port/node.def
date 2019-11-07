@@ -1,0 +1,2 @@
+help: Telnet to <address> <port>
+allowed: echo -n '<1-65535>'

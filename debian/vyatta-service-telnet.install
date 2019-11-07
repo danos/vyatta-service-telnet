@@ -1,0 +1,8 @@
+usr/sbin
+opt/vyatta/bin
+opt/vyatta/preconfig.d
+opt/vyatta/sbin
+opt/vyatta/share/tmplscripts
+opt/vyatta/share/vyatta-op/templates/telnet/node.def
+opt/vyatta/share/vyatta-op/templates/telnet/node.tag/node.def
+opt/vyatta/share/vyatta-op/templates/telnet/node.tag/port
