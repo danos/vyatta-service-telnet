@@ -2,12 +2,13 @@ Source: vyatta-service-telnet
 Section: contrib/net
 Priority: extra
 Maintainer: Vyatta Package Maintainers <DL-vyatta-help@att.com>
-Build-Depends: cpio, debhelper (>= 9), dh-systemd (>= 1.5), dh-yang
+Build-Depends: config-package-dev, cpio, debhelper (>= 9), dh-systemd (>= 1.5), dh-yang
 Standards-Version: 3.9.6
 
 Package: vyatta-service-telnet
 Architecture: any
-Depends: systemd,
+Depends: login,
+ systemd,
  vyatta-cfg,
  telnetd,
  ${misc:Depends},

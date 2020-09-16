@@ -1,0 +1,1 @@
+/etc/securetty.vyatta sed -e '/^# Unix98 PTY slaves/,/#.../d'

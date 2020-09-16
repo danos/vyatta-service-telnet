@@ -11,4 +11,4 @@ override_dh_systemd_start:
 	dh_systemd_start --no-start
 
 %:
-	dh $@ --with=systemd --with=yang
+	dh $@ --with=config-package --with=systemd --with=yang
