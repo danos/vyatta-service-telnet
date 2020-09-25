@@ -1,3 +1,11 @@
+vyatta-service-telnet (1.8) unstable; urgency=medium
+
+  [ Charles (Chas) Williams ]
+  * debian: use transform to edit system files (Bugfix: VRVDR-53067)
+  * debian: clean up offensive language (Bugfix: VRVDR-53067)
+
+ -- Nachiketa Prachanda <nprachan@vyatta.att-mail.com>  Fri, 25 Sep 2020 08:29:22 -0700
+
 vyatta-service-telnet (1.7) unstable; urgency=medium
 
   * DANOS Master Import
