@@ -5,7 +5,7 @@ Description=TELNET protocol daemon for routing-domain %i
 Environment=TERM=linux
 SyslogIdentifier=telnetd-%i
 EnvironmentFile=/run/telnetd/vrf/%i/telnetd.env
-ExecStart=/usr/sbin/chvrf %i /opt/vyatta/sbin/mini-inetd $TELNETD_PORT /usr/sbin/in.telnetd telnetd
+ExecStart=/usr/sbin/chvrf %i /opt/vyatta/sbin/mini-inetd $TELNETD_PORT -- /usr/sbin/in.telnetd telnetd -N
 
 [Install]
 WantedBy=multi-user.target
