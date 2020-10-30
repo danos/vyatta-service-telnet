@@ -1,3 +1,10 @@
+vyatta-service-telnet (1.9) unstable; urgency=medium
+
+  [ Duncan Eastoe ]
+  * telnetd: Disable hostname lookup for conn. source
+
+ -- Nachiketa Prachanda <nprachan@vyatta.att-mail.com>  Fri, 30 Oct 2020 10:55:04 -0700
+
 vyatta-service-telnet (1.8) unstable; urgency=medium
 
   [ Charles (Chas) Williams ]
