@@ -7,8 +7,7 @@ Standards-Version: 3.9.6
 
 Package: vyatta-service-telnet
 Architecture: any
-Depends: login,
- systemd,
+Depends: systemd,
  vyatta-cfg,
  telnetd,
  ${misc:Depends},
