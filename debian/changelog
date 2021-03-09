@@ -1,3 +1,13 @@
+vyatta-service-telnet (1.11) unstable; urgency=medium
+
+  [ Nicholas Brown ]
+  * dh-systemd is part of debhelper
+
+  [ Gavin Shearer ]
+  * need libpam-systemd package to login correctly over a vrf
+
+ -- Nachiketa Prachanda <nprachan@vyatta.att-mail.com>  Tue, 09 Mar 2021 11:25:57 -0800
+
 vyatta-service-telnet (1.10) unstable; urgency=medium
 
   [ Duncan Eastoe ]
