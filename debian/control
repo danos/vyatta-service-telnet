@@ -10,6 +10,7 @@ Architecture: any
 Depends: systemd,
  vyatta-cfg,
  telnetd,
+ libpam-systemd,
  ${misc:Depends},
  ${perl:Depends},
  ${shlibs:Depends}
